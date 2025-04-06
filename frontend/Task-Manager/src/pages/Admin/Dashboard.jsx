@@ -12,8 +12,10 @@ import InfoCard from "../../components/Cards/InfoCard";
 import { LuArrowRight } from "react-icons/lu";
 import TaskListTable from "../../components/TaskListTable";
 import CustomPieChart from "../../components/Charts/CustomPieChart";
+import CustomBarChart from "../../components/Charts/CustomBarChart";
 
 const COLORS = ["#8D51FF", "#00B8DB", "#7BCE00"];
+
 
 const Dashboard = () => {
   useUserAuth();
@@ -25,6 +27,7 @@ const Dashboard = () => {
   const [dashboardData, setDashboardData] = useState(null);
   const [pieChartData, setPieChartData] = useState([]);
   const [barChartData, setBarChartData] = useState([]);
+
 
   // Prepare Chart Data
   const prepareChartData = (data) => {
@@ -44,6 +47,8 @@ const Dashboard = () => {
       { priority: "Medium", count: taskPriorityLevels?.Medium || 0 },
       { priority: "High", count: taskPriorityLevels?.High || 0 },
     ];
+
+    setBarChartData(PriorityLevelData);
   };
 
   const getDashboardData = async () => {
@@ -53,16 +58,16 @@ const Dashboard = () => {
       );
       if (response.data) {
         setDashboardData(response.data);
-        prepareChartData(response.data?.charts || null);
+        prepareChartData(response.data?.charts || null)
       }
     } catch (error) {
       console.error("Error fetching users:", error);
     }
   };
 
-  const onSeeMore = () => {
-    navigate("/admin/tasks");
-  };
+  const onSeeMore = ()=>{
+    navigate('/admin/tasks')
+  }
 
   useEffect(() => {
     getDashboardData();
@@ -118,13 +123,29 @@ const Dashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-4 md:my-6">
+        
         <div>
           <div className="card">
             <div className="flex items-center justify-between">
               <h5 className="font-medium">Task Distribution</h5>
             </div>
 
-            <CustomPieChart data={pieChartData} colors={COLORS} />
+            <CustomPieChart
+              data={pieChartData}
+              colors={COLORS}
+            />
+          </div>
+        </div>
+
+        <div>
+          <div className="card">
+            <div className="flex items-center justify-between">
+              <h5 className="font-medium">Task Priority Levels</h5>
+            </div>
+
+            <CustomBarChart
+              data={barChartData}
+            />
           </div>
         </div>
 
