@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import AuthLayout from "../../components/layouts/AuthLayout";
 import { validateEmail } from "../../utils/helper";
 import ProfilePhotoSelector from "../../components/Inputs/ProfilePhotoSelector";
 import Input from "../../components/Inputs/Input";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axiosInstance from "../../utils/axiosInstance";
+import { API_PATHS } from "../../utils/apiPaths";
+import { UserContext } from "../../context/userContext";
+import uploadImage from "../../utils/uploadImage";
 
 const SignUp = () => {
   const [profilePic, setProfilePic] = useState(null);
@@ -13,6 +17,9 @@ const SignUp = () => {
   const [adminInviteToken, setAdminInviteToken] = useState("");
 
   const [error, setError] = useState(null);
+
+  const {updateUser} = useContext(UserContext)
+  const navigate = useNavigate();
 
   // Handle SignUp Form Submit
   const handleSignUp = async (e) => {
@@ -128,7 +135,7 @@ const SignUp = () => {
           </button>
 
           <p className="text-[13px] text-slate-800 mt-3">
-            Already have an account?{" "}
+            Already an account?{" "}
             <Link className="font-medium text-primary underline" to="/login">
               Login
             </Link>
