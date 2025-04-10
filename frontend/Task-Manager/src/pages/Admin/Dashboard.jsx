@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useUserAuth } from "../../hooks/useUserAuth";
-import { useContext } from "react";
 import { UserContext } from "../../context/userContext";
 import DashboardLayout from "../../components/layouts/DashboardLayout";
 import { useNavigate } from "react-router-dom";
@@ -16,20 +15,16 @@ import CustomBarChart from "../../components/Charts/CustomBarChart";
 
 const COLORS = ["#8D51FF", "#00B8DB", "#7BCE00"];
 
-
 const Dashboard = () => {
   useUserAuth();
-
   const { user } = useContext(UserContext);
-
   const navigate = useNavigate();
 
   const [dashboardData, setDashboardData] = useState(null);
   const [pieChartData, setPieChartData] = useState([]);
   const [barChartData, setBarChartData] = useState([]);
+  const [videoSession, setVideoSession] = useState(null); // To hold the video session data
 
-
-  // Prepare Chart Data
   const prepareChartData = (data) => {
     const taskDistribution = data?.taskDistribution || null;
     const taskPriorityLevels = data?.taskPriorityLevels || null;
@@ -58,21 +53,20 @@ const Dashboard = () => {
       );
       if (response.data) {
         setDashboardData(response.data);
-        prepareChartData(response.data?.charts || null)
+        prepareChartData(response.data?.charts || null);
+        setVideoSession(response.data?.videoSession || null); // Fetch video session data
       }
     } catch (error) {
-      console.error("Error fetching users:", error);
+      console.error("Error fetching dashboard data:", error);
     }
   };
 
-  const onSeeMore = ()=>{
-    navigate('/admin/tasks')
-  }
+  const onSeeMore = () => {
+    navigate("/admin/tasks");
+  };
 
   useEffect(() => {
     getDashboardData();
-
-    return () => {};
   }, []);
 
   return (
@@ -123,17 +117,12 @@ const Dashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-4 md:my-6">
-        
         <div>
           <div className="card">
             <div className="flex items-center justify-between">
               <h5 className="font-medium">Task Distribution</h5>
             </div>
-
-            <CustomPieChart
-              data={pieChartData}
-              colors={COLORS}
-            />
+            <CustomPieChart data={pieChartData} colors={COLORS} />
           </div>
         </div>
 
@@ -142,26 +131,61 @@ const Dashboard = () => {
             <div className="flex items-center justify-between">
               <h5 className="font-medium">Task Priority Levels</h5>
             </div>
-
-            <CustomBarChart
-              data={barChartData}
-            />
+            <CustomBarChart data={barChartData} />
           </div>
         </div>
 
         <div className="md:col-span-2">
           <div className="card">
-            <div className="flex items-center justify-between ">
+            <div className="flex items-center justify-between">
               <h5 className="text-lg">Recent Tasks</h5>
-
               <button className="card-btn" onClick={onSeeMore}>
                 See All <LuArrowRight className="text-base" />
               </button>
             </div>
-
             <TaskListTable tableData={dashboardData?.recentTasks || []} />
           </div>
         </div>
+
+        {/* ✅ Video Call Section */}
+        {user?.role === "admin" && (
+          <div className="md:col-span-2">
+            <div className="card flex flex-col md:flex-row justify-between items-center gap-4">
+              <div>
+                <h5 className="text-lg font-medium mb-1">📹 Team Communication</h5>
+                <p className="text-sm text-gray-500">
+                  Start a live video call and chat with your team.
+                </p>
+              </div>
+              <button
+                onClick={() => navigate("/admin/video-call")}
+                className="bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700 transition"
+              >
+                🎥 Start Video Call & Chat
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Allow users to join the video call */}
+        {user?.role !== "admin" && videoSession && videoSession.active && (
+          <div className="md:col-span-2">
+            <div className="card flex flex-col md:flex-row justify-between items-center gap-4">
+              <div>
+                <h5 className="text-lg font-medium mb-1">📹 Join Video Call</h5>
+                <p className="text-sm text-gray-500">
+                  You have been invited to a live video call.
+                </p>
+              </div>
+              <button
+                onClick={() => navigate("/user/video-call")}
+                className="bg-green-600 text-white px-5 py-2 rounded-md hover:bg-green-700 transition"
+              >
+                🎥 Join Call
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </DashboardLayout>
   );
