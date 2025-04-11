@@ -3,7 +3,7 @@ import { UserContext } from "../../context/userContext";
 import { useNavigate } from "react-router-dom";
 import io from "socket.io-client";
 
-const socket = io("http://localhost:8000"); // Update if deployed
+const socket = io("https://task-manager-gydu.onrender.com/"); // Update if deployed
 
 const VideoCall = () => {
   const { user, loading } = useContext(UserContext);
