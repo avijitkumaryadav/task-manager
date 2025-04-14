@@ -24,7 +24,11 @@ const server = http.createServer(app);
 // Initialize Socket.IO with proper CORS for production
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL || "*", // e.g., "https://your-frontend.netlify.app"
+    origin: [
+      process.env.CLIENT_URL || "*",
+      "http://localhost:5173",
+      "http://192.168.1.35:5173"
+    ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
@@ -36,7 +40,11 @@ connectDB();
 
 // Middleware
 app.use(cors({
-  origin: process.env.CLIENT_URL || "*", // Frontend URL
+  origin: [
+    process.env.CLIENT_URL || "*",
+    "http://localhost:5173",
+    "http://192.168.1.35:5173"
+  ],
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
