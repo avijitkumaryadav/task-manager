@@ -23,38 +23,30 @@ const Dashboard = () => {
   const [dashboardData, setDashboardData] = useState(null);
   const [pieChartData, setPieChartData] = useState([]);
   const [barChartData, setBarChartData] = useState([]);
-  const [videoSession, setVideoSession] = useState(null); // To hold the video session data
 
   const prepareChartData = (data) => {
-    const taskDistribution = data?.taskDistribution || null;
-    const taskPriorityLevels = data?.taskPriorityLevels || null;
+    const taskDistribution = data?.taskDistribution || {};
+    const taskPriorityLevels = data?.taskPriorityLevels || {};
 
-    const taskDistributionData = [
+    setPieChartData([
       { status: "Pending", count: taskDistribution?.Pending || 0 },
       { status: "In Progress", count: taskDistribution?.InProgress || 0 },
       { status: "Completed", count: taskDistribution?.Completed || 0 },
-    ];
+    ]);
 
-    setPieChartData(taskDistributionData);
-
-    const PriorityLevelData = [
+    setBarChartData([
       { priority: "Low", count: taskPriorityLevels?.Low || 0 },
       { priority: "Medium", count: taskPriorityLevels?.Medium || 0 },
       { priority: "High", count: taskPriorityLevels?.High || 0 },
-    ];
-
-    setBarChartData(PriorityLevelData);
+    ]);
   };
 
   const getDashboardData = async () => {
     try {
-      const response = await axiosInstance.get(
-        API_PATHS.TASKS.GET_DASHBOARD_DATA
-      );
+      const response = await axiosInstance.get(API_PATHS.TASKS.GET_DASHBOARD_DATA);
       if (response.data) {
         setDashboardData(response.data);
-        prepareChartData(response.data?.charts || null);
-        setVideoSession(response.data?.videoSession || null); // Fetch video session data
+        prepareChartData(response.data?.charts || {});
       }
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
@@ -72,120 +64,61 @@ const Dashboard = () => {
   return (
     <DashboardLayout activeMenu="Dashboard">
       <div className="card my-5">
-        <div>
-          <div className="col-span-3">
-            <h2 className="text-xl md:text-2xl">Good Morning! {user?.name}</h2>
-            <p className="text-xs md:text-[13px] text-gray-400 mt-1.5">
-              {moment().format("dddd Do MMM YYYY")}
-            </p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 mt-5">
-          <InfoCard
-            label="Total Tasks"
-            value={addThousandsSeparator(
-              dashboardData?.charts?.taskDistribution?.All || 0
-            )}
-            color="bg-primary"
-          />
-
-          <InfoCard
-            label="Pending Tasks"
-            value={addThousandsSeparator(
-              dashboardData?.charts?.taskDistribution?.Pending || 0
-            )}
-            color="bg-violet-500"
-          />
-
-          <InfoCard
-            label="In Progress Tasks"
-            value={addThousandsSeparator(
-              dashboardData?.charts?.taskDistribution?.InProgress || 0
-            )}
-            color="bg-cyan-500"
-          />
-
-          <InfoCard
-            label="Completed Tasks"
-            value={addThousandsSeparator(
-              dashboardData?.charts?.taskDistribution?.Completed || 0
-            )}
-            color="bg-lime-500"
-          />
+        <div className="col-span-3">
+          <h2 className="text-xl md:text-2xl">Good Morning! {user?.name}</h2>
+          <p className="text-xs md:text-[13px] text-gray-400 mt-1.5">
+            {moment().format("dddd Do MMM YYYY")}
+          </p>
         </div>
       </div>
 
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 mt-5">
+        <InfoCard
+          label="Total Tasks"
+          value={addThousandsSeparator(dashboardData?.charts?.taskDistribution?.All || 0)}
+          color="bg-primary"
+        />
+        <InfoCard
+          label="Pending Tasks"
+          value={addThousandsSeparator(dashboardData?.charts?.taskDistribution?.Pending || 0)}
+          color="bg-violet-500"
+        />
+        <InfoCard
+          label="In Progress Tasks"
+          value={addThousandsSeparator(dashboardData?.charts?.taskDistribution?.InProgress || 0)}
+          color="bg-cyan-500"
+        />
+        <InfoCard
+          label="Completed Tasks"
+          value={addThousandsSeparator(dashboardData?.charts?.taskDistribution?.Completed || 0)}
+          color="bg-lime-500"
+        />
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-4 md:my-6">
-        <div>
-          <div className="card">
-            <div className="flex items-center justify-between">
-              <h5 className="font-medium">Task Distribution</h5>
-            </div>
-            <CustomPieChart data={pieChartData} colors={COLORS} />
+        <div className="card">
+          <div className="flex items-center justify-between">
+            <h5 className="font-medium">Task Distribution</h5>
           </div>
+          <CustomPieChart data={pieChartData} colors={COLORS} />
         </div>
 
-        <div>
-          <div className="card">
-            <div className="flex items-center justify-between">
-              <h5 className="font-medium">Task Priority Levels</h5>
-            </div>
-            <CustomBarChart data={barChartData} />
+        <div className="card">
+          <div className="flex items-center justify-between">
+            <h5 className="font-medium">Task Priority Levels</h5>
           </div>
+          <CustomBarChart data={barChartData} />
         </div>
 
-        <div className="md:col-span-2">
-          <div className="card">
-            <div className="flex items-center justify-between">
-              <h5 className="text-lg">Recent Tasks</h5>
-              <button className="card-btn" onClick={onSeeMore}>
-                See All <LuArrowRight className="text-base" />
-              </button>
-            </div>
-            <TaskListTable tableData={dashboardData?.recentTasks || []} />
+        <div className="card md:col-span-2">
+          <div className="flex items-center justify-between">
+            <h5 className="text-lg">Recent Tasks</h5>
+            <button className="card-btn" onClick={onSeeMore}>
+              See All <LuArrowRight className="text-base" />
+            </button>
           </div>
+          <TaskListTable tableData={dashboardData?.recentTasks || []} />
         </div>
-
-        {/* ✅ Video Call Section */}
-        {user?.role === "admin" && (
-          <div className="md:col-span-2">
-            <div className="card flex flex-col md:flex-row justify-between items-center gap-4">
-              <div>
-                <h5 className="text-lg font-medium mb-1">📹 Team Communication</h5>
-                <p className="text-sm text-gray-500">
-                  Start a live video call and chat with your team.
-                </p>
-              </div>
-              <button
-                onClick={() => navigate("/admin/video-call")}
-                className="bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700 transition"
-              >
-                🎥 Start Video Call & Chat
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Allow users to join the video call */}
-        {user?.role !== "admin" && videoSession && videoSession.active && (
-          <div className="md:col-span-2">
-            <div className="card flex flex-col md:flex-row justify-between items-center gap-4">
-              <div>
-                <h5 className="text-lg font-medium mb-1">📹 Join Video Call</h5>
-                <p className="text-sm text-gray-500">
-                  You have been invited to a live video call.
-                </p>
-              </div>
-              <button
-                onClick={() => navigate("/user/video-call")}
-                className="bg-green-600 text-white px-5 py-2 rounded-md hover:bg-green-700 transition"
-              >
-                🎥 Join Call
-              </button>
-            </div>
-          </div>
-        )}
       </div>
     </DashboardLayout>
   );

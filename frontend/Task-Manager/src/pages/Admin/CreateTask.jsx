@@ -23,17 +23,15 @@ const CreateTask = () => {
     title: "",
     description: "",
     priority: "Low",
-    dueDate: null,
-    assignedTo: [],
+    dueDate: "", // Changed to an empty string instead of null
+    assignedTo: [], 
     todoChecklist: [],
     attachments: [],
   });
 
   const [currentTask, setCurrentTask] = useState(null);
-
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-
   const [openDeleteAlert, setOpenDeleteAlert] = useState(false);
 
   const handleValueChange = (key, value) => {
@@ -41,12 +39,11 @@ const CreateTask = () => {
   };
 
   const clearData = () => {
-    //reset form
     setTaskData({
       title: "",
       description: "",
       priority: "Low",
-      dueDate: null,
+      dueDate: "", // Changed to an empty string instead of null
       assignedTo: [],
       todoChecklist: [],
       attachments: [],
@@ -56,7 +53,6 @@ const CreateTask = () => {
   // Create Task
   const createTask = async () => {
     setLoading(true);
-
     try {
       const todolist = taskData.todoChecklist?.map((item) => ({
         text: item,
@@ -70,7 +66,6 @@ const CreateTask = () => {
       });
 
       toast.success("Task Created Successfully");
-
       clearData();
     } catch (error) {
       console.error("Error creating task:", error);
@@ -83,12 +78,10 @@ const CreateTask = () => {
   // Update Task
   const updateTask = async () => {
     setLoading(true);
-
     try {
       const todolist = taskData.todoChecklist?.map((item) => {
         const prevTodoChecklist = currentTask?.todoChecklist || [];
         const matchedTask = prevTodoChecklist.find((task) => task.text == item);
-
         return {
           text: item,
           completed: matchedTask ? matchedTask.completed : false,
@@ -136,7 +129,7 @@ const CreateTask = () => {
     }
 
     if (taskData.todoChecklist?.length === 0) {
-      setError("Add atleast one todo task");
+      setError("Add at least one todo task");
       return;
     }
 
@@ -148,7 +141,7 @@ const CreateTask = () => {
     createTask();
   };
 
-  // get Task info by ID
+  // Get Task info by ID
   const getTaskDetailsByID = async () => {
     try {
       const response = await axiosInstance.get(
@@ -165,10 +158,9 @@ const CreateTask = () => {
           priority: taskInfo.priority,
           dueDate: taskInfo.dueDate
             ? moment(taskInfo.dueDate).format("YYYY-MM-DD")
-            : null,
+            : "", // Ensure dueDate is an empty string if null or undefined
           assignedTo: taskInfo?.assignedTo?.map((item) => item?._id) || [],
-          todoChecklist:
-            taskInfo?.todoChecklist?.map((item) => item?.text) || [],
+          todoChecklist: taskInfo?.todoChecklist?.map((item) => item?.text) || [],
           attachments: taskInfo?.attachments || [],
         }));
       }
@@ -184,7 +176,7 @@ const CreateTask = () => {
 
       setOpenDeleteAlert(false);
       toast.success("Task details deleted successfully");
-      navigate('/admin/tasks')
+      navigate('/admin/tasks');
     } catch (error) {
       console.error(
         "Error deleting:",
@@ -229,7 +221,7 @@ const CreateTask = () => {
               <input
                 placeholder="Create App UI"
                 className="form-input"
-                value={taskData.title}
+                value={taskData.title || ""} // Ensure the value is never null
                 onChange={({ target }) =>
                   handleValueChange("title", target.value)
                 }
@@ -245,7 +237,7 @@ const CreateTask = () => {
                 placeholder="Describe task"
                 className="form-input"
                 rows={4}
-                value={taskData.description}
+                value={taskData.description || ""} // Ensure the value is never null
                 onChange={({ target }) =>
                   handleValueChange("description", target.value)
                 }
@@ -260,7 +252,7 @@ const CreateTask = () => {
 
                 <SelectDropdown
                   options={PRIORITY_DATA}
-                  value={taskData.priority}
+                  value={taskData.priority || ""} // Ensure the value is never null
                   onChange={(value) => handleValueChange("priority", value)}
                   placeholder="Select Priority"
                 />
@@ -274,7 +266,7 @@ const CreateTask = () => {
                 <input
                   placeholder="Create App UI"
                   className="form-input"
-                  value={taskData.dueDate}
+                  value={taskData.dueDate || ""}  // Ensure the value is never null
                   onChange={({ target }) =>
                     handleValueChange("dueDate", target.value)
                   }
@@ -302,7 +294,7 @@ const CreateTask = () => {
               </label>
 
               <TodoListInput
-                todoList={taskData?.todoChecklist}
+                todoList={taskData?.todoChecklist || []} // Ensure the list is not null
                 setTodoList={(value) =>
                   handleValueChange("todoChecklist", value)
                 }
@@ -315,7 +307,7 @@ const CreateTask = () => {
               </label>
 
               <AddAttachmentsInput
-                attachments={taskData?.attachments}
+                attachments={taskData?.attachments || []} // Ensure attachments is not null
                 setAttachments={(value) =>
                   handleValueChange("attachments", value)
                 }
@@ -349,7 +341,6 @@ const CreateTask = () => {
           onDelete={() => deleteTask()}
         />
       </Modal>
-
     </DashboardLayout>
   );
 };

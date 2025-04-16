@@ -12,7 +12,6 @@ import { LuArrowRight } from "react-icons/lu";
 import TaskListTable from "../../components/TaskListTable";
 import CustomPieChart from "../../components/Charts/CustomPieChart";
 import CustomBarChart from "../../components/Charts/CustomBarChart";
-import { io } from "socket.io-client"; // ✅ Socket.IO
 
 const COLORS = ["#8D51FF", "#00B8DB", "#7BCE00"];
 
@@ -24,7 +23,6 @@ const UserDashboard = () => {
   const [dashboardData, setDashboardData] = useState(null);
   const [pieChartData, setPieChartData] = useState([]);
   const [barChartData, setBarChartData] = useState([]);
-  const [activeCall, setActiveCall] = useState(null);
 
   // Chart Data
   const prepareChartData = (data) => {
@@ -57,52 +55,13 @@ const UserDashboard = () => {
     }
   };
 
-  // HTTP fallback for active call
-  const fetchActiveCall = async () => {
-    try {
-      const res = await axiosInstance.get("/api/calls/my-sessions");
-      if (res.status === 200 && res.data.length > 0) {
-        setActiveCall(res.data[0]);
-      }
-    } catch (err) {
-      if (err.response?.status !== 204) {
-        console.error("Error checking active call:", err);
-      }
-    }
-  };
-
   const onSeeMore = () => {
     navigate("/user/tasks");
   };
 
   useEffect(() => {
     if (!user) return;
-    
     getDashboardData();
-    fetchActiveCall();
-
-    // ✅ Socket.io connection for real-time updates
-    const socket = io("http://localhost:8000", {
-      withCredentials: true,
-    });
-
-    if (user?._id) {
-      socket.emit("join-room", {
-        room: "global",
-        user,
-      });
-
-      // ✅ Listen for call session created by admin
-      socket.on("call-session-created", ({ room, participants }) => {
-        if (participants.includes(user._id)) {
-          setActiveCall({ roomId: room, participants });
-        }
-      });
-    }
-
-    return () => {
-      socket.disconnect();
-    };
   }, [user]);
 
   return (
@@ -114,26 +73,6 @@ const UserDashboard = () => {
             {moment().format("dddd Do MMM YYYY")}
           </p>
         </div>
-
-        {/* ✅ Video Call Banner */}
-        {activeCall && (
-          <div className="mt-6 p-4 bg-indigo-50 border border-indigo-200 rounded-xl shadow-sm flex justify-between items-center">
-            <div>
-              <h3 className="text-lg font-medium text-indigo-700">
-                You're invited to a video call
-              </h3>
-              <p className="text-sm text-indigo-500">
-                Click below to join the live session.
-              </p>
-            </div>
-            <button
-              onClick={() => navigate(`/user/video-room/${activeCall.roomId}`)}
-              className="btn btn-primary px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition-all"
-            >
-              Join Now
-            </button>
-          </div>
-        )}
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 mt-5">
