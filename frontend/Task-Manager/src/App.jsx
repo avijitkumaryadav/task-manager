@@ -16,6 +16,11 @@ import UserDashboard from "./pages/User/UserDashboard";
 import MyTasks from "./pages/User/MyTasks";
 import ViewTaskDetails from "./pages/User/ViewTaskDetails";
 
+// Video & Chat Pages
+import VideoCallPage from "./pages/VideoCallPage";
+import VideoRoom from "./components/VideoChat/VideoRoom";
+import ChatPage from "./pages/ChatPage";
+
 // Other Imports
 import PrivateRoute from "./routes/PrivateRoute";
 import UserProvider, { UserContext } from "./context/userContext";
@@ -43,10 +48,12 @@ const App = () => {
             <Route element={<PrivateRoute allowedRoles={["user", "admin"]} />}>
               <Route path="/user/dashboard" element={<UserDashboard />} />
               <Route path="/user/tasks" element={<MyTasks />} />
-              <Route
-                path="/user/task-details/:id"
-                element={<ViewTaskDetails />}
-              />
+              <Route path="/user/task-details/:id" element={<ViewTaskDetails />} />
+              
+              {/* New Video & Chat Routes - Accessible to both users and admins */}
+              <Route path="/video" element={<VideoCallPage />} />
+              <Route path="/video/:roomId" element={<VideoRoom />} />
+              <Route path="/chat" element={<ChatPage />} />
             </Route>
 
             {/* Default Root Redirect */}
