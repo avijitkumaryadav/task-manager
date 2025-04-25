@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const videoController = require('../controllers/videoController');
-const authMiddleware = require('../middlewares/authMiddleware');
 
-router.get('/room', authMiddleware, videoController.getRoomId);
+
+router.post('/sessions', videoController.createSession);
+router.get('/sessions', videoController.getSessions);
 
 module.exports = router;

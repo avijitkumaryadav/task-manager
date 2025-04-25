@@ -42,6 +42,10 @@ const App = () => {
               <Route path="/admin/tasks" element={<ManageTasks />} />
               <Route path="/admin/create-task" element={<CreateTask />} />
               <Route path="/admin/users" element={<ManageUsers />} />
+              
+              {/* New Video & Chat Routes - Accessible to both users and admins */}
+              <Route path="/video" element={<VideoCallPage />} />
+              <Route path="/video/:roomId" element={<VideoRoom />} />
             </Route>
 
             {/* User Routes */}
@@ -50,10 +54,8 @@ const App = () => {
               <Route path="/user/tasks" element={<MyTasks />} />
               <Route path="/user/task-details/:id" element={<ViewTaskDetails />} />
               
-              {/* New Video & Chat Routes - Accessible to both users and admins */}
-              <Route path="/video" element={<VideoCallPage />} />
-              <Route path="/video/:roomId" element={<VideoRoom />} />
               <Route path="/chat" element={<ChatPage />} />
+              
             </Route>
 
             {/* Default Root Redirect */}

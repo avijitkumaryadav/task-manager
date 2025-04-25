@@ -15,8 +15,7 @@ export default defineConfig({
     alias: {
       process: "process/browser",
       stream: "stream-browserify",
-      zlib: "browserify-zlib",
-      util: "util",
+      zlib: "browserify-zlib",      
       buffer: "buffer",
       events: "events",
       crypto: "crypto-browserify",
@@ -32,7 +31,6 @@ export default defineConfig({
       'simple-peer',
       'process',
       'stream-browserify',
-      'util',
       'buffer',
       'events',
       'crypto-browserify',

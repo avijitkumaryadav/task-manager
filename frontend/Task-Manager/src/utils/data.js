@@ -1,3 +1,4 @@
+import { Video, MessageCircle } from 'lucide-react';
 import {
   LuLayoutDashboard,
   LuUsers,
@@ -5,7 +6,8 @@ import {
   LuSquarePlus,
   LuLogOut,
 } from "react-icons/lu";
-import { FaVideo, FaComments } from 'react-icons/fa';
+
+
 
 export const SIDE_MENU_DATA = [
   {
@@ -32,17 +34,16 @@ export const SIDE_MENU_DATA = [
     icon: LuUsers,
     path: "/admin/users",
   },
-  // New video/chat items for admin
   {
     id: "06",
     label: "Video Calls",
-    icon: FaVideo,
+    icon: Video,
     path: "/video",
   },
   {
     id: "07",
     label: "Messages",
-    icon: FaComments,
+    icon: MessageCircle,
     path: "/chat",
   },
   {
@@ -70,13 +71,13 @@ export const SIDE_MENU_USER_DATA = [
   {
     id: "06",
     label: "Video Calls",
-    icon: FaVideo,
+    icon: Video,
     path: "/video",
   },
   {
     id: "07",
     label: "Messages",
-    icon: FaComments,
+    icon: MessageCircle,
     path: "/chat",
   },
   {
