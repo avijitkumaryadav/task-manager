@@ -1,6 +1,6 @@
-import React from 'react'
+import React from "react";
 
-const AvatarGroup = ({avatars, maxVisible = 3}) => {
+const AvatarGroup = ({ avatars, maxVisible = 3 }) => {
   return (
     <div className="flex items-center">
       {avatars.slice(0, maxVisible).map((avatar, index) => (
@@ -17,7 +17,7 @@ const AvatarGroup = ({avatars, maxVisible = 3}) => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default AvatarGroup
+export default AvatarGroup;

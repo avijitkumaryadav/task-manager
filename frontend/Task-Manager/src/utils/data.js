@@ -67,19 +67,6 @@ export const SIDE_MENU_USER_DATA = [
     icon: LuClipboardCheck,
     path: "/user/tasks",
   },
-  // New video/chat items for regular users
-  {
-    id: "06",
-    label: "Video Calls",
-    icon: Video,
-    path: "/video",
-  },
-  {
-    id: "07",
-    label: "Messages",
-    icon: MessageCircle,
-    path: "/chat",
-  },
   {
     id: "05",
     label: "Logout",
