@@ -16,11 +16,6 @@ import UserDashboard from "./pages/User/UserDashboard";
 import MyTasks from "./pages/User/MyTasks";
 import ViewTaskDetails from "./pages/User/ViewTaskDetails";
 
-// Video & Chat Pages (Admin Only)
-import VideoCallPage from "./pages/VideoCallPage";
-import VideoRoom from "./components/VideoChat/VideoRoom";
-import ChatPage from "./pages/ChatPage";
-
 // Other Imports
 import PrivateRoute from "./routes/PrivateRoute";
 import UserProvider, { UserContext } from "./context/userContext";
@@ -42,11 +37,6 @@ const App = () => {
               <Route path="/admin/tasks" element={<ManageTasks />} />
               <Route path="/admin/create-task" element={<CreateTask />} />
               <Route path="/admin/users" element={<ManageUsers />} />
-
-              {/* 🔒 Video & Chat restricted to Admin */}
-              <Route path="/video" element={<VideoCallPage />} />
-              <Route path="/video/:roomId" element={<VideoRoom />} />
-              <Route path="/chat" element={<ChatPage />} />
             </Route>
 
             {/* User Routes */}
