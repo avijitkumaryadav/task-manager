@@ -68,6 +68,12 @@ export const SIDE_MENU_USER_DATA = [
     path: "/user/tasks",
   },
   {
+    id: "03",
+    label: "Messages",
+    icon: MessageCircle,
+    path: "/chat",
+  },
+  {
     id: "05",
     label: "Logout",
     icon: LuLogOut,

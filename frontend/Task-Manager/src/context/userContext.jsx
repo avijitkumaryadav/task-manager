@@ -1,16 +1,15 @@
 import React, { createContext, useState, useEffect } from "react";
 import axiosInstance from "../utils/axiosInstance";
 import { API_PATHS } from "../utils/apiPaths";
+import { socket } from '../utils/socket'; // Make sure this exists and exports a configured socket instance
 
 export const UserContext = createContext();
 
 const UserProvider = ({ children }) => {
-     const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); // New state to track loading
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (user) return;
-
     const accessToken = localStorage.getItem("token");
     if (!accessToken) {
       setLoading(false);
@@ -20,7 +19,12 @@ const UserProvider = ({ children }) => {
     const fetchUser = async () => {
       try {
         const response = await axiosInstance.get(API_PATHS.AUTH.GET_PROFILE);
-        setUser(response.data);
+        const fetchedUser = response.data;
+        setUser(fetchedUser);
+
+        // Connect socket after user is set
+        socket.connect();
+        socket.emit('join', fetchedUser._id);
       } catch (error) {
         console.error("User not authenticated", error);
         clearUser();
@@ -30,17 +34,29 @@ const UserProvider = ({ children }) => {
     };
 
     fetchUser();
+
+    // Disconnect socket on unmount
+    return () => {
+      if (socket.connected) {
+        socket.disconnect();
+      }
+    };
   }, []);
 
   const updateUser = (userData) => {
     setUser(userData);
-    localStorage.setItem("token", userData.token); // Save token
+    localStorage.setItem("token", userData.token);
+    socket.connect();
+    socket.emit('join', userData._id);
     setLoading(false);
   };
 
   const clearUser = () => {
     setUser(null);
     localStorage.removeItem("token");
+    if (socket.connected) {
+      socket.disconnect();
+    }
   };
 
   return (
@@ -48,6 +64,6 @@ const UserProvider = ({ children }) => {
       {children}
     </UserContext.Provider>
   );
-}
+};
 
-export default UserProvider
+export default UserProvider;

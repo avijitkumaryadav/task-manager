@@ -5,6 +5,8 @@ export const API_PATHS = {
     REGISTER: "/api/auth/register",
     LOGIN: "/api/auth/login",
     GET_PROFILE: "/api/auth/profile",
+    LOGOUT: "/api/auth/logout",
+    RESET_PASSWORD: "/api/auth/reset-password",
   },
 
   USERS: {
@@ -27,24 +29,18 @@ export const API_PATHS = {
     UPDATE_TODO_CHECKLIST: (taskId) => `/api/tasks/${taskId}/todo`,
   },
 
-  REPORTS: {
-    EXPORT_TASKS: "/api/reports/export/tasks",
-    EXPORT_USERS: "/api/reports/export/users",
-  },
-
   IMAGE: {
     UPLOAD_IMAGE: "/api/auth/upload-image",
   },
 
-  // New additions for video and chat
-  VIDEO: {
-    ROOM: "/api/video/room", // Note the /api prefix to match your existing pattern
-    JOIN: (roomId) => `/api/video/join/${roomId}`,
+  CHAT: { // Add chat API paths
+    CREATE_CHAT_SESSION: "/api/chat",
+    GET_CHAT_SESSIONS: "/api/chat",
+    GET_CHAT_MESSAGES: (sessionId) => `/api/chat/${sessionId}/messages`,
+    GET_CHAT_SESSION_LINK: (sessionId) => `/api/chat/${sessionId}/link`,
   },
 
-  CHAT: {
-    MESSAGE: "/api/chat/message", // Note the /api prefix
-    HISTORY: (roomId) => `/api/chat/history/${roomId}`,
-    LIST: "/api/chat/list" // New endpoint for getting available chats
+   REPORTS: {
+    GENERATE_REPORT: "/api/reports", // Corrected path based on backend
   },
 };
