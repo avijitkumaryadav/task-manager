@@ -6,15 +6,23 @@ const {
   getChatMessages,
   addMessageToChat,
   getChatSessionLink,
+  deleteChatSession,
+  addParticipants,
+  removeParticipant
 } = require('../controllers/chatController');
 
 const router = express.Router();
 
 // Chat Session Routes
-router.post('/', protect, adminOnly, createChatSession); // Admin creates a session
-router.get('/', protect, getChatSessions); // Get user's chat sessions
-router.get('/:sessionId/messages', protect, getChatMessages); // Get messages for a session
-router.post('/:sessionId/messages', protect, addMessageToChat); // Add message to a session
-router.get('/:sessionId/link', protect, adminOnly, getChatSessionLink); // Get shareable link (Admin only)
+router.post('/', protect, createChatSession);
+router.get('/', protect, getChatSessions);
+router.get('/:sessionId/messages', protect, getChatMessages);
+router.post('/:sessionId/messages', protect, addMessageToChat);
+router.get('/:sessionId/link', protect, getChatSessionLink);
+router.delete('/:sessionId', protect, deleteChatSession);
+
+// Group chat routes
+router.post('/:sessionId/participants', protect, addParticipants);
+router.delete('/:sessionId/participants/:participantId', protect, removeParticipant);
 
 module.exports = router;

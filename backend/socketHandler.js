@@ -43,14 +43,13 @@ const socketHandler = (io) => {
           text: messageData.text,
         });
 
-        // Populate sender details before emitting
         const populatedMessage = await ChatMessage.findById(newMessage._id)
-          .populate('sender', 'name profileImageUrl');
+          .populate("sender", "name profileImageUrl");
 
         io.to(messageData.chatSessionId).emit("receiveMessage", {
           ...populatedMessage.toObject(),
           chatSession: messageData.chatSessionId,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
       } catch (error) {
         console.error("Error sending message:", error);
@@ -68,7 +67,57 @@ const socketHandler = (io) => {
       }
     });
 
-    // Handle disconnecting
+    // Handle adding participants
+    socket.on("addParticipants", async ({ sessionId, participantIds }) => {
+      try {
+        const session = await ChatSession.findByIdAndUpdate(
+          sessionId,
+          { $addToSet: { participants: { $each: participantIds } } },
+          { new: true }
+        )
+          .populate("participants", "name profileImageUrl")
+          .populate("groupAdmin", "name profileImageUrl");
+
+        if (session) {
+          participantIds.forEach((participantId) => {
+            const user = activeUsers.find((u) => u.userId === participantId);
+            if (user) {
+              io.to(user.socketId).emit("sessionInvite", session);
+            }
+          });
+
+          io.to(sessionId).emit("participantAdded", session);
+        }
+      } catch (error) {
+        console.error("Error adding participants:", error);
+      }
+    });
+
+    // Handle removing a participant
+    socket.on("removeParticipant", async ({ sessionId, participantId }) => {
+      try {
+        const session = await ChatSession.findByIdAndUpdate(
+          sessionId,
+          { $pull: { participants: participantId } },
+          { new: true }
+        )
+          .populate("participants", "name profileImageUrl")
+          .populate("groupAdmin", "name profileImageUrl");
+
+        if (session) {
+          const user = activeUsers.find((u) => u.userId === participantId);
+          if (user) {
+            io.to(user.socketId).emit("participantRemoved", { sessionId });
+          }
+
+          io.to(sessionId).emit("participantRemoved", session);
+        }
+      } catch (error) {
+        console.error("Error removing participant:", error);
+      }
+    });
+
+    // Handle disconnect
     socket.on("disconnect", () => {
       activeUsers = activeUsers.filter((user) => user.socketId !== socket.id);
       io.emit("activeUsers", activeUsers);
