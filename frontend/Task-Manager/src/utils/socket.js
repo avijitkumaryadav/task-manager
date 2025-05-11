@@ -1,8 +1,9 @@
 import { io } from "socket.io-client";
 
-// Replace with your backend URL
-const SOCKET_URL = "http://localhost:8000"; // Or your deployed backend URL
+const SOCKET_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
 
 export const socket = io(SOCKET_URL, {
-  autoConnect: false, // We'll manually connect when the user is authenticated
+  autoConnect: false,
+  withCredentials: true,
+  transports: ['websocket', 'polling']
 });

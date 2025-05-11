@@ -11,7 +11,7 @@ const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const taskRoutes = require("./routes/taskRoutes");
 const reportRoutes = require("./routes/reportRoutes");
-const chatRoutes = require("./routes/chatRoutes"); // Import chat routes
+const chatRoutes = require("./routes/chatRoutes");
 
 const app = express();
 const server = http.createServer(app);
@@ -35,24 +35,26 @@ app.use(express.json());
 const io = new Server(server, {
   cors: {
     origin: [process.env.CLIENT_URL || "*", "http://localhost:5173"],
-    methods: ["GET", "POST"]
+    methods: ["GET", "POST"],
+    credentials: true
   }
 });
 
-// Use the socketHandler (assuming socketHandler.js exists and exports a function)
+// Socket.io handler
+require("./socketHandler")(io);
+
 // API Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/reports", reportRoutes);
-app.use("/api/chat", chatRoutes); // Add chat routes
+app.use("/api/chat", chatRoutes);
 
-// Static File Handling (for uploads)
+// Static File Handling
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
 
 // Start Server
 const PORT = process.env.PORT || 8000;
-server.listen(PORT, () => { // Listen on the HTTP server
+server.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`);
 });

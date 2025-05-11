@@ -4,21 +4,21 @@ const ChatMessageSchema = new mongoose.Schema({
   chatSession: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'ChatSession',
-    required: true,
+    required: true
   },
   sender: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
+    required: true
   },
   text: {
     type: String,
-    required: true,
+    required: true
   },
-  timestamp: {
-    type: Date,
-    default: Date.now,
-  },
+  readBy: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }]
 }, { timestamps: true });
 
 module.exports = mongoose.model('ChatMessage', ChatMessageSchema);

@@ -4,8 +4,12 @@ const ChatSessionSchema = new mongoose.Schema({
   participants: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
+    required: true
   }],
-  // You could add other fields here, like a name for group chats
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
 }, { timestamps: true });
 
 module.exports = mongoose.model('ChatSession', ChatSessionSchema);

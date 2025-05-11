@@ -33,14 +33,15 @@ export const API_PATHS = {
     UPLOAD_IMAGE: "/api/auth/upload-image",
   },
 
-  CHAT: { // Add chat API paths
+  CHAT: {
     CREATE_CHAT_SESSION: "/api/chat",
     GET_CHAT_SESSIONS: "/api/chat",
     GET_CHAT_MESSAGES: (sessionId) => `/api/chat/${sessionId}/messages`,
     GET_CHAT_SESSION_LINK: (sessionId) => `/api/chat/${sessionId}/link`,
+    DELETE_CHAT_SESSION: (sessionId) => `/api/chat/${sessionId}`,
   },
 
-   REPORTS: {
-    GENERATE_REPORT: "/api/reports", // Corrected path based on backend
+  REPORTS: {
+    GENERATE_REPORT: "/api/reports",
   },
 };

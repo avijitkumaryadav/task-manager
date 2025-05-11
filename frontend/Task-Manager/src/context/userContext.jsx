@@ -1,7 +1,7 @@
 import React, { createContext, useState, useEffect } from "react";
 import axiosInstance from "../utils/axiosInstance";
 import { API_PATHS } from "../utils/apiPaths";
-import { socket } from '../utils/socket'; // Make sure this exists and exports a configured socket instance
+import { socket } from '../utils/socket';
 
 export const UserContext = createContext();
 
@@ -10,8 +10,8 @@ const UserProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const accessToken = localStorage.getItem("token");
-    if (!accessToken) {
+    const token = localStorage.getItem("token");
+    if (!token) {
       setLoading(false);
       return;
     }
@@ -19,14 +19,10 @@ const UserProvider = ({ children }) => {
     const fetchUser = async () => {
       try {
         const response = await axiosInstance.get(API_PATHS.AUTH.GET_PROFILE);
-        const fetchedUser = response.data;
-        setUser(fetchedUser);
-
-        // Connect socket after user is set
+        setUser(response.data);
         socket.connect();
-        socket.emit('join', fetchedUser._id);
+        socket.emit('join', response.data._id);
       } catch (error) {
-        console.error("User not authenticated", error);
         clearUser();
       } finally {
         setLoading(false);
@@ -35,11 +31,8 @@ const UserProvider = ({ children }) => {
 
     fetchUser();
 
-    // Disconnect socket on unmount
     return () => {
-      if (socket.connected) {
-        socket.disconnect();
-      }
+      if (socket.connected) socket.disconnect();
     };
   }, []);
 
@@ -48,15 +41,12 @@ const UserProvider = ({ children }) => {
     localStorage.setItem("token", userData.token);
     socket.connect();
     socket.emit('join', userData._id);
-    setLoading(false);
   };
 
   const clearUser = () => {
     setUser(null);
     localStorage.removeItem("token");
-    if (socket.connected) {
-      socket.disconnect();
-    }
+    if (socket.connected) socket.disconnect();
   };
 
   return (
