@@ -49,10 +49,22 @@ const socketHandler = (io) => {
 
         io.to(messageData.chatSessionId).emit("receiveMessage", {
           ...populatedMessage.toObject(),
-          chatSession: messageData.chatSessionId
+          chatSession: messageData.chatSessionId,
+          timestamp: new Date().toISOString()
         });
       } catch (error) {
         console.error("Error sending message:", error);
+      }
+    });
+
+    // Handle session deletion
+    socket.on("deleteSession", async (sessionId) => {
+      try {
+        await ChatMessage.deleteMany({ chatSession: sessionId });
+        await ChatSession.findByIdAndDelete(sessionId);
+        io.to(sessionId).emit("sessionDeleted", { sessionId });
+      } catch (error) {
+        console.error("Error deleting session:", error);
       }
     });
 

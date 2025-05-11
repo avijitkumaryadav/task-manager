@@ -10,7 +10,7 @@ import React, {
   import { socket } from '../../utils/socket';
   import axiosInstance from '../../utils/axiosInstance';
   import { API_PATHS } from '../../utils/apiPaths';
-  import { MessageCircle, Share2, Trash2 } from 'lucide-react';
+  import { HiOutlineTrash, HiOutlineShare } from 'react-icons/hi2';
   
   const ChatPage = () => {
     const { user } = useContext(UserContext);
@@ -80,9 +80,17 @@ import React, {
         setActiveUsers(users);
       });
   
+      socket.on('sessionDeleted', ({ sessionId }) => {
+        if (selectedSession?._id === sessionId) {
+          setSelectedSession(null);
+        }
+        setChatSessions(prev => prev.filter(session => session._id !== sessionId));
+      });
+  
       return () => {
         socket.off('receiveMessage');
         socket.off('activeUsers');
+        socket.off('sessionDeleted');
       };
     }, [user, fetchChatSessions, fetchAllUsers, selectedSession]);
   
@@ -105,7 +113,6 @@ import React, {
           name: user.name,
           profileImageUrl: user.profileImageUrl || '',
         },
-        timestamp: new Date(),
       };
   
       socket.emit('sendMessage', messageData);
@@ -151,13 +158,18 @@ import React, {
   
       if (window.confirm('Are you sure you want to delete this chat session?')) {
         try {
+          socket.emit('deleteSession', selectedSession._id);
           await axiosInstance.delete(API_PATHS.CHAT.DELETE_CHAT_SESSION(selectedSession._id));
-          setSelectedSession(null);
-          fetchChatSessions();
         } catch (err) {
           console.error('Error deleting session:', err);
         }
       }
+    };
+  
+    const formatTime = (timestamp) => {
+      if (!timestamp) return '';
+      const date = new Date(timestamp);
+      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     };
   
     return (
@@ -237,18 +249,18 @@ import React, {
                     {user?.role === 'admin' && (
                       <>
                         <button
-                          className="bg-gray-200 p-1 rounded"
+                          className="text-gray-600 hover:text-blue-600 p-1 rounded"
                           onClick={handleGetShareLink}
                           title="Share Session"
                         >
-                          <Share2 size={20} />
+                          <HiOutlineShare size={20} />
                         </button>
                         <button
-                          className="bg-red-500 text-white p-1 rounded"
+                          className="text-gray-600 hover:text-red-600 p-1 rounded"
                           onClick={handleDeleteSession}
                           title="Delete Session"
                         >
-                          <Trash2 size={20} />
+                          <HiOutlineTrash size={20} />
                         </button>
                       </>
                     )}
@@ -295,8 +307,8 @@ import React, {
                       >
                         <div className="font-semibold">{msg.sender.name}</div>
                         <div>{msg.text}</div>
-                        <div className="text-xs text-right text-gray-600">
-                          {new Date(msg.timestamp).toLocaleTimeString()}
+                        <div className="text-xs text-right opacity-80">
+                          {formatTime(msg.createdAt || msg.timestamp)}
                         </div>
                       </div>
                       {msg.sender._id === user._id && (

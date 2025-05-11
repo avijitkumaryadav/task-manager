@@ -110,10 +110,32 @@ const getChatSessionLink = async (req, res) => {
   }
 };
 
+const deleteChatSession = async (req, res) => {
+  try {
+    const { sessionId } = req.params;
+    const session = await ChatSession.findById(sessionId);
+
+    if (!session || !session.participants.includes(req.user._id)) {
+      return res.status(403).json({ message: 'Not authorized' });
+    }
+
+    // Delete all messages in the session first
+    await ChatMessage.deleteMany({ chatSession: sessionId });
+    
+    // Then delete the session
+    await ChatSession.findByIdAndDelete(sessionId);
+
+    res.json({ message: 'Chat session deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
 module.exports = {
   createChatSession,
   getChatSessions,
   getChatMessages,
   addMessageToChat,
   getChatSessionLink,
+  deleteChatSession,
 };
