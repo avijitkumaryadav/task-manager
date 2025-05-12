@@ -1,4 +1,4 @@
-import { Video, MessageCircle } from 'lucide-react';
+import { Video } from 'lucide-react';
 import {
   LuLayoutDashboard,
   LuUsers,
@@ -6,8 +6,6 @@ import {
   LuSquarePlus,
   LuLogOut,
 } from "react-icons/lu";
-
-
 
 export const SIDE_MENU_DATA = [
   {
@@ -35,19 +33,13 @@ export const SIDE_MENU_DATA = [
     path: "/admin/users",
   },
   {
-    id: "06",
-    label: "Video Calls",
+    id: "05",
+    label: "Meet",
     icon: Video,
-    path: "/video",
-  },
-  {
-    id: "07",
-    label: "Messages",
-    icon: MessageCircle,
     path: "/chat",
   },
   {
-    id: "05",
+    id: "06",
     label: "Logout",
     icon: LuLogOut,
     path: "logout",
@@ -69,12 +61,12 @@ export const SIDE_MENU_USER_DATA = [
   },
   {
     id: "03",
-    label: "Messages",
-    icon: MessageCircle,
+    label: "Meet",
+    icon: Video,
     path: "/chat",
   },
   {
-    id: "05",
+    id: "04",
     label: "Logout",
     icon: LuLogOut,
     path: "logout",
