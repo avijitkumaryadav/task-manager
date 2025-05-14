@@ -12,6 +12,7 @@ const userRoutes = require("./routes/userRoutes");
 const taskRoutes = require("./routes/taskRoutes");
 const reportRoutes = require("./routes/reportRoutes");
 const chatRoutes = require("./routes/chatRoutes");
+const meetRoutes = require("./routes/meetRoutes");
 
 const app = express();
 const server = http.createServer(app);
@@ -49,6 +50,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/reports", reportRoutes);
 app.use("/api/chat", chatRoutes);
+app.use("/api/meet", meetRoutes);
 
 // Static File Handling
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));

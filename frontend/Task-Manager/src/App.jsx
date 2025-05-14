@@ -13,6 +13,7 @@ import UserDashboard from "./pages/User/UserDashboard";
 import MyTasks from "./pages/User/MyTasks";
 import ViewTaskDetails from "./pages/User/ViewTaskDetails";
 import ChatPage from "./pages/Chat/ChatPage";
+import Meet from "./pages/Meet/Meet";
 
 // Components
 import PrivateRoute from "./routes/PrivateRoute";
@@ -42,6 +43,7 @@ const App = () => {
               <Route path="/user/tasks" element={<MyTasks />} />
               <Route path="/user/task-details/:id" element={<ViewTaskDetails />} />
               <Route path="/chat" element={<ChatPage />} />
+              <Route path="/meet" element={<Meet />} />
             </Route>
 
             {/* Default Root Redirect */}
