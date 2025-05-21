@@ -1,42 +1,8 @@
-# 📝 Task Manager App
+https://github.com/user-attachments/assets/630fc23e-a807-475e-a4fa-f4d249d57833
 
-## Overview
 
-The **Task Manager App** is a full-stack web application designed to help users manage their tasks efficiently. Built using the MERN (MongoDB, Express.js, React.js, Node.js) stack, it offers a seamless experience for task creation, tracking, and management.
 
-## Features
-
-1. **Task Assignment and Prioritization**  
-   Assign tasks to team members with clear deadlines and priority levels.
-
-2. **Deadline Tracking and Notifications**  
-   Set task deadlines and receive automated reminders to stay on schedule.
-
-3. **Progress Reporting**  
-   Generate reports on task completion and team performance with analytics for better decision-making.
-
-4. **Role-Based Permissions**  
-   Control access levels by assigning roles like Admin, Editor, or Viewer to team members.
-
-5. **Real-Time Collaboration**  
-   Add comments, share files, and discuss tasks within the platform for seamless teamwork.
-
-6. **Secure Authentication and Authorization**  
-   Ensure only verified users can access the platform using secure login (authentication).
-
----
-
-## 🛠️ Tech Stack & Versions
-
-- **Backend**: Node.js, Express.js  
-- **Frontend**: React.js  
-- **Database**: MongoDB Atlas  
-- **Node Version**: `v23.10.0`  
-- **NPM Version**: `v11.2.0`
-
----
-
-## 📁 Project Structure
+## Project Structure
 
 ```
 root/
@@ -47,9 +13,9 @@ root/
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
-### 🔧 Backend Setup (Express.js)
+### Backend Setup (Express.js)
 
 1. Navigate to the `backend` directory:
 
@@ -64,6 +30,7 @@ root/
     ```
 
 3. Set up MongoDB:
+   - Create a free cluster
    - Visit [MongoDB Atlas](https://www.mongodb.com/)
    - Log in or create an account
    - Create a **New Project**
@@ -81,14 +48,17 @@ root/
    - Copy the connection string
 
 5. First, create the environment variables file `.env` in the server folder. The `.env` file contains the following environment variables:
-
-   - MONGODB_URI = `Replace `<password>` with your actual database user password`
-        ```
-        Update `.env` file: MONGO_URL=mongodb+srv://<username>:<password>@cluster0.mongodb.net/?retryWrites=true&w=majority
-        ```
-   - JWT_SECRET = `any secret key - must be secured`
-   - ADMIN_INVITE_TOKEN= `any secret number`
-   - PORT = `8000`
+     
+     ```bash
+   MONGODB_URI = `Replace `<username>` and `<password>` with your actual database user password`
+   JWT_SECRET = `any secret key - must be secured`
+   ADMIN_INVITE_TOKEN= `any secret number`
+   PORT = `8000`
+   CLIENT_URL=http://localhost:5173
+   JITSI_DOMAIN=your.domain.com
+   JITSI_APP_ID=task-manager-app
+   JITSI_SECRET=your-jitsi-secret-key
+     ```
 
 6. Generate JWT Secret:
 
@@ -101,6 +71,9 @@ root/
     ```
     JWT_SECRET=your_generated_jwt_secret
     ```
+    ```
+    JITSI_SECRET=your_generated_jwt_secret
+    ```
 
 8. Start backend server:
 
@@ -110,21 +83,25 @@ root/
 
 ---
 
-### 💻 Frontend Setup (React.js)
+### Frontend Setup (React.js)
 
-1. Navigate to the frontend directory:
+1. Configure the environment variables file `.env` in the frontend folder. The `.env` file contains the following environment variables:
+
+   - VITE_BACKEND_URL=http://localhost:8000
+
+2. Navigate to the frontend directory:
 
     ```bash
     cd frontend/Task-Manager
     ```
 
-2. Install dependencies:
+3. Install dependencies:
 
     ```bash
     npm install
     ```
 
-3. Start React development server:
+4. Start React development server:
 
     ```bash
     npm run dev
@@ -132,16 +109,16 @@ root/
 
 This will open the app in your default browser.
 
+Access the app at: http://localhost:5173.
+
 ---
 
-## 🎉 You're All Set!
+## You're All Set!
 
 If you've followed the steps above, the Task Manager App should now be up and running. Enjoy managing your tasks efficiently! 🚀
 
 &nbsp;
 
-## For Support, Contact:
-
-- Email: kumaravijit010@gmail.com
+## For Support, Contact: https://avijitkumaryadav.netlify.app/
 
 <img width="100%" src="https://camo.githubusercontent.com/525201e24fcf0d7d87f167b8f972bf33242f0588d8bb426b7df5e2911bcc609a/68747470733a2f2f7777772e616e696d61746564696d616765732e6f72672f646174612f6d656469612f3536322f616e696d617465642d6c696e652d696d6167652d303138342e676966"/>
